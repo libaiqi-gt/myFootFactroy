@@ -1,53 +1,3 @@
-header{
-  min-height: 80px;
-  border-bottom: 1px solid #eee;
-  background-color: white;
-  .logo{
-    height: 60px;
-    margin: 10px;
-    margin-left: 50px;
-  }
-  .searchBox{
-    display: inline-block;
-    width: 300px;
-    margin: 20px;
-  }
-  .menu{
-    display: inline-block;
-    ul{
-      list-style-type: none;
-      li{
-        display: inline-block;
-        margin: 0 10px;
-        cursor: pointer;
-        font-size: 16px;
-        &:hover{
-          color: var(--themeColor);
-        }
-      }
-    }
-  }
-  .avatarBox{
-    margin: 20px;
-    span{
-      font-size: 16px;
-      display: inline-block;
-      &:nth-child(2){
-        margin-left: 10px;
-        cursor: pointer;
-        &:hover{
-          color: #ef475d;
-        }
-      }
-      &:nth-child(4){
-        cursor: pointer;
-        &:hover{
-          color: #ef475d;
-        }
-      }
-    }
-  }
-}
 .carouselBox{
   margin-top: 10px;
   display: flex;
@@ -97,7 +47,7 @@ header{
       }
       .author {
         font-size: 16px;
-        color: rgb(199, 196, 196);
+        color: var(--fontColor);
       }
     }
   }
@@ -145,7 +95,7 @@ header{
         }
         .author {
           font-size: 16px;
-          color: rgb(199, 196, 196);
+          color: var(--fontColor);
         }
       }
     }
@@ -210,19 +160,4 @@ header{
     }
   }
 }
-footer{
-  width: 100%;
-  height: 120px;
-  margin-top: 40px;
-  background-color: var(--footerColor);
-  .footerBox{
-    text-align: center;
-    line-height: 30px;
-    padding-top: 20px;
-  }
-  p{
-    &:nth-child(1){
-      font-size: 20px;
-    }
-  }
-}
+

@@ -1,30 +1,5 @@
 <template>
   <div class="home">
-    <header>
-      <Row>
-        <Col span="6">
-          <img src="../../assets/logo1.png" alt="美食工厂" class="logo">
-        </Col>
-        <Col span="14">
-          <div class="searchBox">
-            <Input search placeholder="输入内容搜索" size="large"/>
-          </div>
-          <div class="menu">
-            <ul>
-              <li v-for="(item,index) in menuList" :key="index">{{item}}</li>
-            </ul>
-          </div>
-        </Col>
-        <Col span="4">
-          <div class="avatarBox">
-            <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="large" />
-            <span @click="openLogin">登录</span>
-            <span>|</span>
-            <span>注册</span>
-          </div>
-        </Col>
-      </Row>
-    </header>
     <div class="carouselBox">
       <div class="carousel">
         <Carousel autoplay v-model="carouselIndex" loop :autoplay-speed="4000">
@@ -42,7 +17,7 @@
         <div class="dailyMenu">
           <h1>每日推荐菜谱</h1>
           <div class="dailyMenuBox">
-            <div class="foodBox" v-for="(item,index) in dailyMenuList" :key="index">
+            <div class="foodBox" v-for="(item,index) in dailyMenuList" :key="index" @click="openDetail(item.creationId)">
               <div class="imgContainer">
                 <img :src="item.imageUrl" :alt="item.title">
               </div>
@@ -102,12 +77,6 @@
         </div>
       </main>
     </div>
-    <footer>
-      <div class="footerBox">
-        <p>唯美食于爱不可辜负🧡 </p>
-        <p>Copyright © 2021 柏岐 · </p>
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -119,7 +88,6 @@ export default {
   components: { sortMenu },
   data () {
     return {
-      menuList: ['首页','菜谱分类','菜单','关于我们'],
       carouselIndex: 0,
       imgList: [
         '../../../static/bg1.jpg',
@@ -171,17 +139,20 @@ export default {
         {
           title:'菜谱1',
           imageUrl: '../../../static/footImg/foot1.jpg',
-          author: '作者1'
+          author: '作者1',
+          creationId: 1
         },
         {
           title:'菜谱2',
           imageUrl: '../../../static/footImg/foot2.jpg',
-          author: '作者2'
+          author: '作者2',
+          creationId: 2
         },
         {
           title:'菜谱3',
           imageUrl: '../../../static/footImg/foot3.jpg',
-          author: '作者3'
+          author: '作者3',
+          creationId: 3
         }
       ],
       newFoodList: [
@@ -348,10 +319,10 @@ export default {
         console.log(res);
       })
     },
-    // 打开登陆页
-    openLogin () {
+    // 打开详情页
+    openDetail (creationId) {
       this.$router.push({
-        name: 'login'
+        path: `/menuDetails/${creationId}`
       })
     }
   },

@@ -1,0 +1,38 @@
+.menuSort {
+  main {
+    width: 1150px;
+    margin: 20px auto;
+  }
+  .tabel {
+    display: flex;
+    font-size: 26px;
+    height: auto;
+    margin-bottom: 30px;
+    .title {
+      width: 300px;
+      background-color: #eeeeee;
+      color: #666;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .childFoodBox {
+      display: flex;
+      flex-wrap: wrap;
+      width: 800px;
+      font-size: 20px;
+      .child{
+        border: 1px solid #eeeeee;
+        width: 120px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        &:hover{
+          background-color: #eeeeee;
+        }
+      }
+    }
+  }
+}

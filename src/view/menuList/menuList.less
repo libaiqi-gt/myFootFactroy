@@ -1,0 +1,67 @@
+.container {
+  width: 1150px;
+  margin: 10px auto;
+  display: flex;
+  .leftBox {
+    min-width: 200px;
+    padding: 0 20px;
+    .sortList span {
+      display: block;
+      margin: 20px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: left;
+      &:hover {
+        color: var(--themeColor);
+      }
+    }
+  }
+  .rightBox {
+    color: black;
+    .foodContainer {
+      display: flex;
+    }
+    .foodBox {
+      width: 450px;
+      display: flex;
+      margin-right: 30px;
+      img {
+        width: 215px;
+        height: 140px;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+      .foodInfo {
+        h2 {
+          font-size: 18px;
+          &:hover {
+            color: var(--themeColor);
+            cursor: pointer;
+          }
+        }
+        margin-left: 20px;
+        .sortBox {
+          color: #9c6730;
+          .name {
+            cursor: pointer;
+            &:hover {
+              color: var(--themeColor);
+            }
+          }
+        }
+        p {
+          color: var(--fontColor);
+          margin-top: 5px;
+        }
+        .author{
+          cursor: pointer;
+          &:hover{
+            color: var(--themeColor);
+          }
+        }
+      }
+    }
+  }
+}
