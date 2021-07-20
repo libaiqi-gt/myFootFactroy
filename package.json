@@ -15,8 +15,10 @@
     "less-loader": "^5.0.0",
     "view-design": "^4.5.0-beta.5",
     "vue": "^2.5.2",
+    "vue-cookies": "^1.7.4",
     "vue-router": "^3.0.1",
-    "vue-wechat-title": "^2.0.7"
+    "vue-wechat-title": "^2.0.7",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

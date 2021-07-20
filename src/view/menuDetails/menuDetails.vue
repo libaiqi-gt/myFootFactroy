@@ -7,76 +7,165 @@
       </span>
     </nav>
     <div class="detailsBox">
-      <h1>{{detailsObj.title}}</h1>
+      <div class="title">
+        <h1>{{detailsObj.title}}</h1>
+        <span>点赞量：{{detailsObj.likeNum}}</span>
+      </div>
       <div class="infoBox">
         <div class="left">
-          <img :src="detailsObj.image" :alt="detailsObj.title">
+          <img :src="detailsObj.coverUrl" :alt="detailsObj.title">
         </div>
         <div class="right">
           <div class="personalInfo">
-            <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="60" />
-            <span class="userName">{{detailsObj.userName}}</span>
+            <div>
+              <Avatar :src="detailsObj.userAvatar? detailsObj.userAvatar :avatar" size="60" />
+              <span class="userName">{{detailsObj.author}}</span>
+            </div>
+            <Button
+              v-if="userInfo.id"
+              style="margin-right:40px"
+              :type="detailsObj.isLike? null :'info'"
+              @click="setLike"
+              size="large">{{detailsObj.isLike?'取消点赞':'点赞'}}</Button>
           </div>
           <div class="introduce">
-            <pre>{{detailsObj.introduce}}</pre>
+            <pre>{{detailsObj.summary}}</pre>
           </div>
           <div class="material">
             <h1>用料</h1>
             <div class="materialBox" v-for="(item,index) in detailsObj.material" :key="index">
-              <span>{{item.name}}</span>
-              <span>{{item.size}}</span>
+              <span>{{item.materialName}}</span>
+              <span>{{item.weight}}</span>
             </div>
           </div>
         </div>
       </div>
       <div class="menuStep">
         <h1>{{detailsObj.title}}制作步骤</h1>
-        <div class="stepBox" v-for="(item,index) in detailsObj.step" :key="index">
+        <div class="stepBox" v-for="(item,index) in detailsObj.makeStep" :key="index">
           <span class="step">{{index+1}}</span>
           <span class="content">{{item.content}}</span>
-          <img :src="item.stepImage">
+          <img :src="item.stepUrl">
         </div>
       </div>
+    </div>
+    <div>
+      <div class="commentHead">
+        <h1>评论区</h1>
+        <Button type="text" size="large" @click="onComment">{{userInfo.id?'点击评论':'登录后评论'}}</Button>
+      </div>
+      <div v-show="showCommentInput">
+        <Input type="text" placeholder="请输入评论内容，按回车键发布！" @on-enter="addCommentData" v-model="commentContent"/>
+      </div>
+      <List>
+        <div v-if="commentList.length !== 0">
+          <ListItem v-for="(item,index) in commentList" :key="index">
+            <ListItemMeta
+              :avatar="item.userAvatar || avatar"
+              :title="item.userName"
+              :description="item.content" />
+              <template slot="action" v-if="userInfo.id == item.userId">
+                <Button type="text" icon="md-trash" style="font-size:20px" title="删除" @click="delComment(item.id)"></Button>
+              </template>
+          </ListItem>
+        </div>
+        <div v-else class="commentTip">
+          <span>暂无评论</span>
+        </div>
+      </List>
     </div>
   </div>
 </template>
 
 <script>
+import { getOneCookbook, getComment, addComment, setLike, delComment } from '@/api/home'
+import {mapMutations} from 'vuex';
+import avatar from '@/assets/avatar.jpg'
 export default {
   name: 'menuDetails',
+  computed: {
+    userInfo(){
+      return this.$store.state.user.userInfo;
+    }
+  },
   data () {
     return {
       nav: ['首页','分类','标题'],
-      detailsObj: {
-        title: '作品标题',
-        image: '../../../static/footImg/foot1.jpg',
-        userName: '作者1',
-        introduce: `夏天不能少的就是雪糕啦，今天做一款浓香丝滑的牛奶布丁雪糕🍦，奶香浓郁真的超好吃呀～～
-这款雪糕真的一点冰渣都没有，浓郁的奶香味，夹杂着葡萄干的甜香味，浓香丝滑，入口即化，葡萄干🍇的颗粒感，更让你回味无穷♾～ `,
-        material: [
-          {name:'牛奶',size:'200g'},
-          {name:'淡奶油',size:'150g'},
-          {name:'白糖',size:'适量'}
-        ],
-        step: [
-          {
-            content: '自制无冰渣葡萄干雪糕',
-            stepImage: '../../../static/footImg/foot1.jpg'
-          },
-          {
-            content: '奶香味浓郁，真的好好吃',
-            stepImage: '../../../static/footImg/foot1.jpg'
-          },
-          {
-            content: '记忆中的味道',
-            stepImage: '../../../static/footImg/foot1.jpg'
-          },
-        ]
-      }
+      detailsObj: {},
+      showCommentInput: false,
+      commentContent: '',
+      commentList: [],
+      avatar
     }
   },
   methods: {
-
+    // 获取菜谱详情、评论
+    getOneCookbookData(){
+      let params = {
+        cookbookId: this.$route.params.id,
+        userId: this.userInfo.id || ''
+      };
+      getOneCookbook(params).then(res=>{
+        this.detailsObj = res;
+      });
+    },
+    // 获取菜谱评论
+    getComment(){
+      let params = {
+        cookbookId: this.$route.params.id
+      };
+      getComment(params).then(res=>{
+        this.commentList = res.commentList;
+      });
+    },
+    // 发布评论
+    addCommentData(){
+      const data = {
+        cookbookId: this.$route.params.id,
+        userId: this.userInfo.id,
+        content: this.commentContent
+      };
+      addComment(data).then(res=>{
+        this.getComment();
+        this.$Message.success('评论成功！');
+        this.commentContent = '';
+        this.showCommentInput = false;
+      })
+    },
+    // 点赞或取消点赞
+    setLike(){
+      const params = {
+        userId: this.userInfo.id,
+        cookbookId: this.$route.params.id,
+        state: this.detailsObj.isLike ? 2 : 1
+      };
+      setLike(params).then(res=>{
+        this.detailsObj.isLike ? this.detailsObj.likeNum-- : this.detailsObj.likeNum++;
+        this.detailsObj.isLike = !this.detailsObj.isLike;
+      });
+    },
+    // 删除评论
+    delComment(id){
+      delComment({id}).then(res=>{
+        if(res === 'success'){
+          this.getComment();
+          this.$Message.success('删除成功！');
+        }
+      })
+    },
+    onComment(){
+      if(this.userInfo.id){
+        this.showCommentInput = true;
+      }else{
+        this.$router.push({
+          name: 'login'
+        })
+      }
+    }
+  },
+  created () {
+    this.getOneCookbookData();
+    this.getComment();
   }
 }
 </script>

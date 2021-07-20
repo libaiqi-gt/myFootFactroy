@@ -6,7 +6,7 @@
       </Col>
       <Col span="14">
         <div class="searchBox" v-show="this.$route.name !== 'login'">
-          <Input search placeholder="输入内容搜索" size="large"/>
+          <Input v-model="seachValue" search placeholder="输入内容搜索" size="large" @on-search="searchCookbook"/>
         </div>
         <div class="menu">
           <ul @click="openRoute">
@@ -16,25 +16,60 @@
       </Col>
       <Col span="4">
         <div class="avatarBox">
-          <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" size="large" />
-          <span @click="openLogin(true)">登录</span>
-          <span>|</span>
-          <span @click="openLogin(false)">注册</span>
+          <Dropdown trigger="hover" @on-click="openMenuItem">
+            <Avatar :src="userInfo.avatar? userInfo.avatar :avatar"
+              size="large"
+              style="cursor: pointer;"
+              v-if="userInfo.id" />
+            <DropdownMenu slot="list">
+              <DropdownItem name="addCookbook">发布菜谱</DropdownItem>
+              <DropdownItem name="personal">个人中心</DropdownItem>
+              <DropdownItem name="service">服务中心</DropdownItem>
+              <DropdownItem name="admin" v-if="userInfo.id === 1">管理中心</DropdownItem>
+              <DropdownItem name="outLogin">退出登录</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+          <span @click="openLogin(true)" v-if="!userInfo.id">登录</span>
+          <span v-if="!userInfo.id">|</span>
+          <span @click="openLogin(false)" v-if="!userInfo.id">注册</span>
+          <div v-if="userInfo.id" style="padding-left:10px;display:inline-block;font-size:16px">{{userInfo.name || userInfo.account}}</div>
         </div>
       </Col>
     </Row>
+    <Modal
+      v-model="showMeTip"
+      title="关于我们"
+      @on-ok="showMeTip = false"
+      @on-cancel="showMeTip = false">
+      <div>该网站目前只有作者一人全程制作与维护。</div>
+      <div>如需联系作者</div>
+      <div>QQ:892208148</div>
+    </Modal>
   </header>
 </template>
 
 <script>
+import {mapMutations} from 'vuex';
+import avatar from '@/assets/avatar.jpg'
 export default {
   name: 'headMenu',
+  computed: {
+    userInfo(){
+      return this.$store.state.user.userInfo;
+    }
+  },
   data () {
     return {
-      menuList: ['首页','菜单','食材分类','关于我们']
+      menuList: ['首页','菜单','食材分类','关于我们'],
+      showMeTip: false,
+      seachValue: '',
+      avatar
     }
   },
   methods:{
+    ...mapMutations({
+      'outLogin': 'user/outLogin'
+    }),
     // 打开登陆页
     openLogin (isLogin) {
       this.$router.push({
@@ -56,10 +91,52 @@ export default {
         case '食材分类':
           name = 'menuSort'
           break;
+        case '关于我们':
+          this.showMeTip = true;
+          return;
       };
       this.$router.push({
         name: name
       });
+    },
+    openMenuItem(name) {
+      switch(name){
+        case 'addCookbook':
+          this.$router.push({
+            name: 'addCookbook'
+          });
+          break;
+        case 'outLogin':
+          this.outLogin();
+          this.$router.push({
+            name: 'home'
+          });
+          break;
+        case 'personal':
+          this.$router.push({
+            name: 'personal'
+          });
+          break;
+        case 'service':
+          this.$router.push({
+            name: 'feedback'
+          });
+          break;
+        case 'admin':
+          this.$router.push({
+            name: 'admin'
+          });
+          break;
+      }
+    },
+    searchCookbook(value){
+      if(value){
+        this.$router.push({
+          name: 'menuList',
+          query: {searchValue:value}
+        });
+        this.seachValue = '';
+      }
     }
   }
 }

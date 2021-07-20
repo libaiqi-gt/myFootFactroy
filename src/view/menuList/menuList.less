@@ -18,13 +18,16 @@
   }
   .rightBox {
     color: black;
+    min-width: 1000px;
     .foodContainer {
       display: flex;
+      flex-wrap: wrap;
     }
     .foodBox {
       width: 450px;
       display: flex;
       margin-right: 30px;
+      margin-bottom: 30px;
       img {
         width: 215px;
         height: 140px;
@@ -34,6 +37,7 @@
         }
       }
       .foodInfo {
+        flex: 1;
         h2 {
           font-size: 18px;
           &:hover {
@@ -43,13 +47,17 @@
         }
         margin-left: 20px;
         .sortBox {
+          width: 200px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
           color: #9c6730;
-          .name {
-            cursor: pointer;
-            &:hover {
-              color: var(--themeColor);
-            }
-          }
+          // .name {
+          //   cursor: pointer;
+          //   &:hover {
+          //     color: var(--themeColor);
+          //   }
+          // }
         }
         p {
           color: var(--fontColor);

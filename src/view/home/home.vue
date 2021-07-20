@@ -17,11 +17,11 @@
         <div class="dailyMenu">
           <h1>每日推荐菜谱</h1>
           <div class="dailyMenuBox">
-            <div class="foodBox" v-for="(item,index) in dailyMenuList" :key="index" @click="openDetail(item.creationId)">
+            <div class="foodBox" v-for="(item,index) in dailyMenuList" :key="index" @click="openDetail(item.id)">
               <div class="imgContainer">
-                <img :src="item.imageUrl" :alt="item.title">
+                <img :src="item.coverUrl" :alt="item.title">
               </div>
-              <p class="title">{{item.title}}</p>
+              <p class="title" :title="item.title">{{item.title}}</p>
               <p class="author">{{item.author}}</p>
             </div>
           </div>
@@ -29,15 +29,15 @@
         <div class="newMenu">
           <div class="newMenuHead">
             <h1>新秀菜谱</h1>
-            <p>全部</p>
+            <!-- <p>全部</p> -->
           </div>
           <div class="foodListBox">
             <ul>
-              <li class="foodLiItem" v-for="(item,index) in newFoodList" :key="index">
+              <li class="foodLiItem" v-for="(item,index) in newFoodList" :key="index" @click="openDetail(item.id)">
                 <div class="imgContainer">
-                  <img :src="item.imageUrl" :alt="item.title">
+                  <img :src="item.coverUrl" :alt="item.title">
                 </div>
-                <p class="title">{{item.title}}</p>
+                <p class="title" :title="item.title">{{item.title}}</p>
                 <p class="author">{{item.author}}</p>
               </li>
             </ul>
@@ -46,15 +46,15 @@
         <div class="hotMenu">
           <div class="newMenuHead">
             <h1>最近流行</h1>
-            <p>全部</p>
+            <!-- <p>全部</p> -->
           </div>
           <div class="foodListBox">
             <ul>
-              <li class="foodLiItem" v-for="(item,index) in hotFoodList" :key="index">
+              <li class="foodLiItem" v-for="(item,index) in hotFoodList" :key="index" @click="openDetail(item.id)">
                 <div class="imgContainer">
-                  <img :src="item.imageUrl" :alt="item.title">
+                  <img :src="item.coverUrl" :alt="item.title">
                 </div>
-                <p class="title">{{item.title}}</p>
+                <p class="title" :title="item.title">{{item.title}}</p>
                 <p class="author">{{item.author}}</p>
               </li>
             </ul>
@@ -63,15 +63,14 @@
         <div class="ingredients">
           <div class="newMenuHead">
             <h1>时令食材</h1>
-            <p>更多</p>
+            <p @click="openFoodSort">更多</p>
           </div>
           <ul>
-            <li class="foodBox" v-for="(item,index) in ingredientsList" :key="index">
+            <li class="foodBox" v-for="(item,index) in ingredientsList" :key="index" @click="openSortCookbook(item.id)">
               <div style="cursor: pointer;">
-                <img :src="item.imageUrl" :alt="item.title">
-                <p class="title">{{item.title}}</p>
+                <img :src="item.imgUrl" :alt="item.name">
+                <p class="title">{{item.name}}</p>
               </div>
-              <p class="remarks" style="color: rgb(199, 196, 196);">{{item.remarks}}</p>
             </li>
           </ul>
         </div>
@@ -82,241 +81,32 @@
 
 <script>
 import sortMenu from './sortMenu'
-import { getList } from '@/api/home'
+import { getList, getcookbookSort, getCookbook, getSeasonOrHot } from '@/api/home'
 export default {
   name: 'home',
   components: { sortMenu },
   data () {
     return {
       carouselIndex: 0,
+      cookbookType: 'recommend',
       imgList: [
         '../../../static/bg1.jpg',
         '../../../static/bg2.jpg'
       ],
-      sortMenuList: [
-        {
-          title: '素类',
-          image: '../../../static/sortMenuImg/huacai.png'
-        },
-        {
-          title: '肉类',
-          image: '../../../static/sortMenuImg/niupai.png'
-        },
-        {
-          title: '蛋类',
-          image: '../../../static/sortMenuImg/jidan.png'
-        },
-        {
-          title: '主食',
-          image: '../../../static/sortMenuImg/mifan.png'
-        },
-        {
-          title: '面食',
-          image: '../../../static/sortMenuImg/miantiao.png'
-        },
-        {
-          title: '海鲜',
-          image: '../../../static/sortMenuImg/longxia.png'
-        },
-        {
-          title: '粥',
-          image: '../../../static/sortMenuImg/zhou.png'
-        },
-        {
-          title: '饮品',
-          image: '../../../static/sortMenuImg/yinpin.png'
-        },
-        {
-          title: '烘焙',
-          image: '../../../static/sortMenuImg/pisa.png'
-        },
-        {
-          title: '小吃',
-          image: '../../../static/sortMenuImg/wanzi.png'
-        }
-      ],
-      dailyMenuList:[
-        {
-          title:'菜谱1',
-          imageUrl: '../../../static/footImg/foot1.jpg',
-          author: '作者1',
-          creationId: 1
-        },
-        {
-          title:'菜谱2',
-          imageUrl: '../../../static/footImg/foot2.jpg',
-          author: '作者2',
-          creationId: 2
-        },
-        {
-          title:'菜谱3',
-          imageUrl: '../../../static/footImg/foot3.jpg',
-          author: '作者3',
-          creationId: 3
-        }
-      ],
-      newFoodList: [
-        {
-          title:'菜谱1',
-          imageUrl: '../../../static/footImg/foot1.jpg',
-          author: '作者1'
-        },
-        {
-          title:'菜谱2',
-          imageUrl: '../../../static/footImg/foot2.jpg',
-          author: '作者2'
-        },
-        {
-          title:'菜谱3',
-          imageUrl: '../../../static/footImg/foot3.jpg',
-          author: '作者3'
-        },
-        {
-          title:'菜谱4',
-          imageUrl: '../../../static/footImg/foot4.jpg',
-          author: '作者4'
-        },
-        {
-          title:'菜谱5',
-          imageUrl: '../../../static/footImg/foot5.jpg',
-          author: '作者5'
-        },
-        {
-          title:'菜谱6',
-          imageUrl: '../../../static/footImg/foot6.jpg',
-          author: '作者6'
-        },
-      ],
-      hotFoodList: [
-        {
-          title:'菜谱1',
-          imageUrl: '../../../static/footImg/foot1.jpg',
-          author: '作者1'
-        },
-        {
-          title:'菜谱2',
-          imageUrl: '../../../static/footImg/foot2.jpg',
-          author: '作者2'
-        },
-        {
-          title:'菜谱3',
-          imageUrl: '../../../static/footImg/foot3.jpg',
-          author: '作者3'
-        },
-        {
-          title:'菜谱4',
-          imageUrl: '../../../static/footImg/foot4.jpg',
-          author: '作者4'
-        },
-        {
-          title:'菜谱5',
-          imageUrl: '../../../static/footImg/foot5.jpg',
-          author: '作者5'
-        },
-        {
-          title:'菜谱6',
-          imageUrl: '../../../static/footImg/foot6.jpg',
-          author: '作者6'
-        },
-        {
-          title:'菜谱7',
-          imageUrl: '../../../static/footImg/foot7.jpg',
-          author: '作者7'
-        },
-        {
-          title:'菜谱8',
-          imageUrl: '../../../static/footImg/foot8.jpg',
-          author: '作者8'
-        },
-        {
-          title:'菜谱9',
-          imageUrl: '../../../static/footImg/foot1.jpg',
-          author: '作者9'
-        },
-        {
-          title:'菜谱10',
-          imageUrl: '../../../static/footImg/foot2.jpg',
-          author: '作者10'
-        },
-        {
-          title:'菜谱11',
-          imageUrl: '../../../static/footImg/foot3.jpg',
-          author: '作者11'
-        },
-        {
-          title:'菜谱12',
-          imageUrl: '../../../static/footImg/foot4.jpg',
-          author: '作者12'
-        },
-      ],
-      ingredientsList: [
-        {
-          title:'白菜',
-          imageUrl: '../../../static/IngredientsImg/baicai.jpg',
-          remarks: '百财不换'
-        },
-        {
-          title:'白萝卜',
-          imageUrl: '../../../static/IngredientsImg/bailuobo.jpg',
-          remarks: '赛人参'
-        },
-        {
-          title:'山药',
-          imageUrl: '../../../static/IngredientsImg/shanyao.jpg',
-          remarks: '补虚上品“小人参”'
-        },
-        {
-          title:'芋头',
-          imageUrl: '../../../static/IngredientsImg/yutou.jpg',
-          remarks: '芋，我所欲也'
-        },
-        {
-          title:'紫薯',
-          imageUrl: '../../../static/IngredientsImg/zishu.jpg',
-          remarks: '高贵优雅紫'
-        },
-        {
-          title:'板栗',
-          imageUrl: '../../../static/IngredientsImg/banli.jpg',
-          remarks: '举累了放嘴里'
-        },
-        {
-          title:'牛肉',
-          imageUrl: '../../../static/IngredientsImg/niurou.jpg',
-          remarks: '牛气冲天不解释'
-        },
-        {
-          title:'猪里脊',
-          imageUrl: '../../../static/IngredientsImg/zhuliji.png',
-          remarks: '超嫩小鲜肉'
-        },
-        {
-          title:'羊肉',
-          imageUrl: '../../../static/IngredientsImg/yangrou.jpg',
-          remarks: '暖身的恩物'
-        },
-        {
-          title:'乌鸡',
-          imageUrl: '../../../static/IngredientsImg/wuji.jpg',
-          remarks: '滋补强身战斗鸡'
-        },
-        {
-          title:'鸡翅',
-          imageUrl: '../../../static/IngredientsImg/jichi.jpg',
-          remarks: '老少通吃'
-        },
-        {
-          title:'排骨',
-          imageUrl: '../../../static/IngredientsImg/paigu.jpg',
-          remarks: '可记得吮指之乐'
-        },
-      ]
+      sortMenuList: [],
+      dailyMenuList:[],
+      newFoodList: [],
+      hotFoodList: [],
+      ingredientsList: [],
+      page: 1,
+      limit: 3
     }
   },
   methods: {
-    getList(){
-      getList().then(res=>{
-        console.log(res);
+    // 获取侧边导航栏菜谱分类
+    async getcookbookSortData() {
+      await getcookbookSort().then(res=>{
+        this.sortMenuList = res;
       })
     },
     // 打开详情页
@@ -324,10 +114,76 @@ export default {
       this.$router.push({
         path: `/menuDetails/${creationId}`
       })
+    },
+    // 获取菜谱
+    async getCookbookData (cookbookType) {
+      this.cookbookType = cookbookType;
+      let params = {
+        cookbookType: cookbookType,
+        page: this.page,
+        limit: this.limit
+      };
+      await getCookbook(params).then(res=>{
+        switch(cookbookType){
+          case 'new':
+            this.newFoodList = res.cookbookList;
+            break;
+          case 'recommend':
+            this.dailyMenuList = res.cookbookList;
+            break;
+          case 'popular':
+            this.hotFoodList = res.cookbookList;
+            break;
+        };
+      })
+    },
+    // 获取每日推荐菜谱
+    getRecommend(){
+      this.page = 1;
+      this.limit = 3;
+      this.getCookbookData('recommend');
+    },
+    // 获取新秀菜谱
+    getNew(){
+      this.page = 1;
+      this.limit = 6;
+      this.getCookbookData('new');
+    },
+    // 获取流行菜谱
+    getPopular(){
+      this.page = 1;
+      this.limit = 6;
+      this.getCookbookData('popular');
+    },
+    // 获取时令食材
+    async getSeasonOrHotData(){
+      let params = {
+        type: 'season',
+        page: 1,
+        limit:16
+      };
+      getSeasonOrHot(params).then(res=>{
+        this.ingredientsList = res.foodList;
+      })
+    },
+    openFoodSort(){
+      this.$router.push({
+        name: 'menuSort'
+      })
+    },
+    openSortCookbook(id){
+      this.$router.push({
+        name: 'menuList',
+        query: {smallClassId:id}
+      });
     }
   },
   created(){
-    // this.getList();
+    this.getcookbookSortData();
+    this.getRecommend();
+    this.getNew();
+    this.getPopular();
+    this.getSeasonOrHotData();
   }
 }
 </script>

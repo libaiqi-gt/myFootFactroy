@@ -5,7 +5,10 @@ import Login from '@/view/login/login'
 import menuSort from '@/view/menuSort/index'
 import menuDetails from '@/view/menuDetails/menuDetails'
 import menuList from '@/view/menuList/menuList'
-
+import addCookbook from '@/view/addCookbook/addCookbook'
+import personal from '@/view/personal/personal'
+import feedback from '@/view/feedback/feedback'
+import administration from '@/view/administration/administration'
 Vue.use(Router)
 
 export default new Router({
@@ -49,6 +52,38 @@ export default new Router({
       component: menuList,
       meta: {
         title: '菜单'
+      }
+    },
+    {
+      path: '/addCookbook',
+      name: 'addCookbook',
+      component: addCookbook,
+      meta: {
+        title: '发布菜谱'
+      }
+    },
+    {
+      path: '/personal',
+      name: 'personal',
+      component: personal,
+      meta: {
+        title: '个人中心'
+      }
+    },
+    {
+      path: '/feedback',
+      name: 'feedback',
+      component: feedback,
+      meta: {
+        title: '服务中心'
+      }
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: administration,
+      meta: {
+        title: '管理中心'
       }
     },
   ]

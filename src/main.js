@@ -7,6 +7,9 @@ import iView from 'view-design'
 import 'view-design/dist/styles/iview.css'
 import '../src/global/style.less'
 import VueWechatTitle from 'vue-wechat-title'
+import store from './stroe'
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
 Vue.use(VueWechatTitle)
 
 Vue.config.productionTip = false
@@ -17,6 +20,7 @@ Vue.use(iView);
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

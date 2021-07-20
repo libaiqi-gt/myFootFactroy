@@ -1,13 +1,14 @@
 <template>
   <div class="container">
-    <div v-for="(item,index) in sortMenuList" :key="index" class="menuItem">
-      <img :src="item.image"/>
-      <span style="padding-left:10px">{{item.title}}</span>
+    <div v-for="(item,index) in sortMenuList" :key="index" class="menuItem" @click="openSortCookbook(item.id)">
+      <img :src="`${item.imgUrl}`"/>
+      <span style="padding-left:10px">{{item.name}}</span>
     </div>
   </div>
 </template>
 
 <script>
+import { getSortCookbook } from '@/api/home'
 export default {
   name: 'sortMenu',
   props: {
@@ -19,7 +20,12 @@ export default {
     }
   },
   methods: {
-
+    openSortCookbook(id){
+      this.$router.push({
+        name: 'menuList',
+        query: {largeClassId:id}
+      })
+    }
   }
 }
 </script>

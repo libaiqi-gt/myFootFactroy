@@ -15,9 +15,22 @@
 
 <script>
 import headMenu from './components/head'
+import {mapMutations} from 'vuex';
 export default {
   name: 'App',
-  components: { headMenu }
+  components: { headMenu },
+  methods: {
+    ...mapMutations({
+      'setUser': 'user/setUser'
+    })
+  },
+  created(){
+    // 记录是否已经登录，防止浏览器刷新vuex的数据丢失
+    let userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+    if(userInfo){
+      this.setUser(userInfo);
+    }
+  }
 }
 </script>
 
@@ -30,7 +43,6 @@ export default {
   footer{
     width: 100%;
     height: 120px;
-    margin-top: 40px;
     background-color: var(--footerColor);
     .footerBox{
       text-align: center;
